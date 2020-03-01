@@ -5,6 +5,7 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ^SPACE::  Winset, Alwaysontop, , A ; ctrl + 空白鍵 視窗最上層
+
 :O:@gm::@gmail.com{Home} ; @gm 空白/Tab/Enter O是Omit的意思
 :*:@gm::@gmail.com ; @gm *直接觸發
 
