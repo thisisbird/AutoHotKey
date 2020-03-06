@@ -29,10 +29,9 @@ CoordMode, Mouse, Window
         MouseMove, 389, 199
         Send, {LButton}
         sleep 200
-        Send, {enter}
-        sleep 1000
+        
         ; +-----
-        IfWinExist, Warming
+        IfWinExist, Warning
         { ; 已安裝過,取消安裝
             WinActivate
             sleep 200
@@ -40,7 +39,6 @@ CoordMode, Mouse, Window
             sleep 200
             IfWinExist, Setup
             {
-                MsgBox, 111
                 WinActivate
                 MouseMove, 487, 15
                 sleep 200
@@ -49,20 +47,20 @@ CoordMode, Mouse, Window
             sleep 500
             IfWinExist, Question
             {
-                MsgBox, 222
                 WinActivate
                 sleep 200
                 Send, {enter}
             }
+            MsgBox, xampp已安裝，退出中
             return
         }else{
-            return 
+            Send, {enter}
+            sleep 200
+            Send, {enter}
+            MsgBox, xampp安裝中
         }
-        ; +----
-        Send, {enter}
     }
-    sleep,200
-    MsgBox, xampp安裝中
+    return
     
 
 !s::
@@ -81,6 +79,10 @@ CoordMode, Mouse, Window
         sleep 200
         Send, {LButton}
     }
+    Send, !d
+    
+
+    return
 !d::
     IfWinExist, XAMPP Control
     {
@@ -118,7 +120,9 @@ CoordMode, Mouse, Window
     }else{
         MsgBox, 無
     }
-
+    sleep 200
+    Send, !g
+    return
 !g::
     IfWinExist, httpd.conf
     {
@@ -140,6 +144,9 @@ CoordMode, Mouse, Window
         Send, ^s
         WinClose
     }
+    Send, !h
+    return
+!h::     
     IfWinExist, XAMPP Control
     {
         ; 啟動apache filezila
@@ -154,3 +161,5 @@ CoordMode, Mouse, Window
         sleep 200
         Send, {LButton}
     }
+    return
+
