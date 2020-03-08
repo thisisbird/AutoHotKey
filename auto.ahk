@@ -3,74 +3,80 @@ SetWorkingDir, %A_ScriptDir%
 #SingleInstance Force
 CoordMode, Mouse, Window
 
+^F2::
+    run,C:\WINDOWS\System32\UserAccountControlSettings.exe
+    return 
 ; xampp安裝
-^a::
-    run, %A_ScriptDir%\xampp.exe  , , ,NEWPID
-    sleep,6000
-    WinGetTitle,Title,ahk_pid %NEWPID%
-    ; IfWinExist, Setup
-    IfWinExist, %Title%
-    {
-        WinActivate ; use the window found above
-        Send, {enter}
-    }else{
-        Msgbox 找不到視窗
+^F3::
+    IfExist, C:\xampp
+        MsgBox, 已經安裝xampp
+    else{
+        installXampp()
     }
-    sleep,200
-    IfWinExist, Setup
+    return
+
+^F4::
+    copyData()
+    Return
+
+copyData(){
+    FileCopyDir, %A_ScriptDir%\testcopy, C:\testcopy
+    FileCopyDir, %A_ScriptDir%\testcopy2, C:\testcopy2
+    FileCopyDir, %A_ScriptDir%\testcopy3, C:\testcopy3
+    FileCopyDir, %A_ScriptDir%\EMS_Control, C:/xampp/htdocs/EMS_Control/
+    
+    FileCopy, %A_ScriptDir%\啟動\*.*, %A_Startup%
+    Return
+}
+
+installXampp(){
+    run, %A_ScriptDir%\xampp.exe  , , ,NEWPID
+    WinGetTitle,Title,ahk_pid %NEWPID%
+    WinWaitActive, Warning , , 15
+    if ErrorLevel
     {
-        WinActivate ; use the window found above
-        Send, {enter}
-        sleep 200
-        Send, {enter}
-        sleep 200
-        Send, {enter}
-        sleep 200
-        MouseMove, 389, 199
-        Send, {LButton}
-        sleep 200
-        
-        ; +-----
-        IfWinExist, Warning
-        { ; 已安裝過,取消安裝
-            WinActivate
-            sleep 200
+        MsgBox, WinWait timed out.
+        return
+    }
+    else{
+        IfWinExist, %Title%
+        {
+            WinActivate ; use the window found above
             Send, {enter}
-            sleep 200
-            IfWinExist, Setup
-            {
-                WinActivate
-                MouseMove, 487, 15
-                sleep 200
-                Send, {LButton}
-            }
-            sleep 500
-            IfWinExist, Question
-            {
-                WinActivate
-                sleep 200
-                Send, {enter}
-            }
-            MsgBox, xampp已安裝，退出中
-            return
-        }else{
+        }
+        sleep,1000
+        IfWinExist, Setup
+        {
+            WinActivate ; use the window found above
             Send, {enter}
             sleep 200
             Send, {enter}
-            MsgBox, xampp安裝中
+            sleep 200
+            Send, {enter}
+            sleep 200
+            MouseMove, 389, 199
+            Send, {LButton}
+            sleep 200
+            Send, {enter}
+            sleep 200
+            Send, {enter}
+            copyData()
+            MsgBox, xampp安裝中,看到Finish再按確定
+            windowsS()
+            installFinsh()
         }
     }
     return
-    
+}
 
-!s::
+installFinsh(){
     IfWinExist, Setup
     {
         WinActivate
         sleep 200
         Send, {enter}
     }
-    sleep 200
+    sleep 3000
     IfWinExist, Language
     {
         WinActivate
@@ -78,12 +84,17 @@ CoordMode, Mouse, Window
         MouseMove, 182, 148
         sleep 200
         Send, {LButton}
+        sleep 1000
+        configSetting()
     }
-    Send, !d
-    
-
     return
-!d::
+}
+
+!x::
+    configSetting()
+    return 
+
+configSetting(){
     IfWinExist, XAMPP Control
     {
         WinActivate
@@ -118,12 +129,14 @@ CoordMode, Mouse, Window
         sleep 200
         Send, {LButton}
     }else{
-        MsgBox, 無
+        MsgBox, 未啟動xampp Control
     }
-    sleep 200
-    Send, !g
+    sleep 1000
+    pathChange()
     return
-!g::
+}
+
+pathChange(){
     IfWinExist, httpd.conf
     {
         ; 開啟notepad
@@ -131,22 +144,24 @@ CoordMode, Mouse, Window
         sleep 200
         Send, ^h
         Clipboard = "C:/xampp/htdocs"
-        sleep 200
+        sleep 300
         Send, ^v
-        sleep 200
+        sleep 300
         Send, {tab}
         Clipboard = "C:/xampp/htdocs/EMS_Control/public"
-        sleep 200
+        sleep 300
         Send, ^v
         sleep 200
         Send, !a
-        sleep 200
+        sleep 500
         Send, ^s
+        sleep 500
         WinClose
     }
-    Send, !h
+    startApache_Filezila()
     return
-!h::     
+}
+startApache_Filezila(){
     IfWinExist, XAMPP Control
     {
         ; 啟動apache filezila
@@ -155,11 +170,47 @@ CoordMode, Mouse, Window
         MouseMove, 344, 114
         sleep 200
         Send, {LButton}
-
         sleep 200
         MouseMove, 331, 167
         sleep 200
         Send, {LButton}
+        sleep 200
+        windowsS()
+        sleep 200
+        fileZilaSetting()
     }
     return
+}
+windowsS(){
+    IfWinExist, Windows 安全性警訊
+    {
+        WinActivate
+        sleep 200
+        MouseMove, 448,413
+        sleep 200
+        Send, {LButton}
+    }
+}
+fileZilaSetting(){
+    IfWinExist, Connect to Server
+    {
+        ; filezila
+        WinActivate
+        sleep 200
+        MouseMove, 344, 114
+        sleep 200
+        Send, {LButton}
+        sleep 200
+        MouseMove, 331, 167
+        sleep 200
+        Send, {LButton}
+        sleep 200
+        windowsS()
+        sleep 200
+    }
+    IfWinExist, FileZilla Server
+    {
+        WinActivate
 
+    }
+}
