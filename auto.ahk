@@ -16,11 +16,15 @@ MsgBox, 開啟自動設定功能
     sqlSetting()
     return
 
-;^F5::
- ;   fileZilaSetting()
-  ;  Return
+^F5::
+   ezproSetting()
+   Return
 ^F6::
     laravelSchedule()
+    return
+
+~LButton & r::
+	reload
     return
 sqlSetting(){
     Run, http://localhost/myadmin/
@@ -413,4 +417,69 @@ laravelSchedule(){
         Send, {LButton}
     }
     return
+}
+ezproSetting(){
+    IfWinExist, EZ Pro
+    {
+        WinActivate
+        Send, ^e
+        sleep 1000
+        WinMove, A, , (A_ScreenWidth/2)-(1200/2), (A_ScreenHeight/2)-(800/2), 1200, 800
+        for key,i in [1,2,3,4,5,6,7,8,9,10,11,12,101,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36]
+        {
+        if GetKeyState("F5", "P")
+        {
+            MsgBox, 終止腳本
+            break  ; 離開這個 Loop.
+        }
+        sleep 200
+        MouseMove, 923, 64 ;新增
+        sleep 200
+        Send, {LButton}
+
+        sleep 200
+        MouseMove, 338, 532 ;事件
+        sleep 200
+        Send, {LButton}
+
+        sleep 200
+        MouseMove, 148, 637 ;通用事件
+        sleep 200
+        Send, {LButton}
+
+        sleep 200
+        MouseMove, 200, 533 ;輸入event
+        sleep 200
+        Send, {LButton}
+        sleep 200
+        Clipboard = event%i%
+        Send, ^v
+        
+        sleep 200
+        MouseMove, 830, 500 ;進行
+        sleep 200
+        Send, {LButton}
+
+        sleep 200
+        MouseMove, 700, 684 ;緊急錄影
+        sleep 200
+        Send, {LButton}
+
+        sleep 200
+        MouseMove, 888, 530 ;分改秒
+        sleep 200
+        Send, {LButton}
+
+        sleep 200
+        MouseMove, 888, 558 ;秒
+        sleep 200
+        Send, {LButton}
+        }
+
+        sleep 200
+        MouseMove, 966, 759 ;確定
+        sleep 200
+        MsgBox, 設定完畢,按下確認。
+    }
+    Return
 }
